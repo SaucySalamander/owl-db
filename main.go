@@ -16,8 +16,10 @@ func main() {
 	if err := setup_env(); err != nil {
 		panic(err)
 	}
+	var host = viper.GetString("host")
+	var port = viper.GetString("port")
 
-	lis, err := net.Listen("tcp", ":8080")
+	lis, err := net.Listen("tcp", host+":"+port)
 	if err != nil {
 		log.Errorf("Failure to create server, %v", err)
 	}
