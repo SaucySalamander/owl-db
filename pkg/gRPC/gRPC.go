@@ -39,11 +39,12 @@ func (s *account_server) GetAccount(ctx context.Context, request *proto.GetAccou
 func (s *account_server) CreateAccount(ctx context.Context, request *proto.CreateAccountRequest) (*proto.CreateAccountResponse, error) {
 	result := internal_account.CreateAccount(request)
 	var response proto.CreateAccountResponse
+	id, _ := result.LastInsertId()
 	r, _ := result.RowsAffected()
 	if r < 1 {
-		response = proto.CreateAccountResponse{Response: false}
+		response = proto.CreateAccountResponse{Id: 0}
 	} else {
-		response = proto.CreateAccountResponse{Response: true}
+		response = proto.CreateAccountResponse{Id: id}
 	}
 
 	return &response, nil

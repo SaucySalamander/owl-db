@@ -10,7 +10,7 @@ import (
 )
 
 type Account struct {
-	Id   int32
+	Id   int64
 	Name string
 }
 
