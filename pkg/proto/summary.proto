@@ -4,8 +4,8 @@ option go_package = "github.com/SaucySalamander/owl-db/pkg/proto/summary";
 
 package proto;
 
-service get_summary {
-    rpc get_summary (summary_request) returns (summary_response) {} 
+service GetSummary {
+    rpc GetSummary (summary_request) returns (summary_response) {} 
 }
 
 enum SUMMARY_REPORT {

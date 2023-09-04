@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	GetSummary_GetSummary_FullMethodName = "/proto.get_summary/get_summary"
+	GetSummary_GetSummary_FullMethodName = "/proto.GetSummary/GetSummary"
 )
 
 // GetSummaryClient is the client API for GetSummary service.
@@ -96,11 +96,11 @@ func _GetSummary_GetSummary_Handler(srv interface{}, ctx context.Context, dec fu
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var GetSummary_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.get_summary",
+	ServiceName: "proto.GetSummary",
 	HandlerType: (*GetSummaryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "get_summary",
+			MethodName: "GetSummary",
 			Handler:    _GetSummary_GetSummary_Handler,
 		},
 	},

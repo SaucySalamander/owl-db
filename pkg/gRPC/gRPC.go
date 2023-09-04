@@ -11,7 +11,7 @@ type server struct {
 	summary.UnimplementedGetSummaryServer
 }
 
-func (s *server) get_summary(ctx context.Context, request *summary.SummaryRequest) (*summary.SummaryResponse, error) {
+func (s *server) GetSummary(ctx context.Context, request *summary.SummaryRequest) (*summary.SummaryResponse, error) {
 	return &summary.SummaryResponse{Message: "test"}, nil
 }
 
