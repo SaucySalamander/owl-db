@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v4.24.0
-// source: pkg/proto/summary/summary.proto
+// source: pkg/proto/summary.proto
 
-package summary
+package proto
 
 import (
 	context "context"
@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	GetSummary_GetSummary_FullMethodName = "/summary.GetSummary/GetSummary"
+	GetSummary_GetSummary_FullMethodName = "/proto.GetSummary/GetSummary"
 )
 
 // GetSummaryClient is the client API for GetSummary service.
@@ -96,7 +96,7 @@ func _GetSummary_GetSummary_Handler(srv interface{}, ctx context.Context, dec fu
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var GetSummary_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "summary.GetSummary",
+	ServiceName: "proto.GetSummary",
 	HandlerType: (*GetSummaryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -105,5 +105,5 @@ var GetSummary_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "pkg/proto/summary/summary.proto",
+	Metadata: "pkg/proto/summary.proto",
 }

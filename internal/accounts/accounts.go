@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/SaucySalamander/owl-db/pkg/proto/account"
+	"github.com/SaucySalamander/owl-db/pkg/proto"
 	"github.com/spf13/viper"
 )
 
@@ -27,7 +27,7 @@ func open_db() *sql.DB {
 	return db
 }
 
-func CreateAccount(request *account.CreateAccountRequest) sql.Result {
+func CreateAccount(request *proto.CreateAccountRequest) sql.Result {
 	db := open_db()
 
 	result, err := db.ExecContext(context.TODO(), "INSERT INTO account (name) VALUES ($1)", request.Name)

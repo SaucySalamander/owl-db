@@ -5,37 +5,36 @@ import (
 
 	internal_account "internal/accounts"
 
-	"github.com/SaucySalamander/owl-db/pkg/proto/account"
-	"github.com/SaucySalamander/owl-db/pkg/proto/summary"
+	"github.com/SaucySalamander/owl-db/pkg/proto"
 	"google.golang.org/grpc"
 )
 
 type account_server struct {
-	account.UnimplementedAccountsServer
+	proto.UnimplementedAccountsServer
 }
 
 type summary_server struct {
-	summary.UnimplementedGetSummaryServer
+	proto.UnimplementedGetSummaryServer
 }
 
-func (s *summary_server) GetSummary(ctx context.Context, request *summary.SummaryRequest) (*summary.SummaryResponse, error) {
-	return &summary.SummaryResponse{Message: "test"}, nil
+func (s *summary_server) GetSummary(ctx context.Context, request *proto.SummaryRequest) (*proto.SummaryResponse, error) {
+	return &proto.SummaryResponse{Message: "test"}, nil
 }
 
-func (s *account_server) CreateAccount(ctx context.Context, request *account.CreateAccountRequest) (*account.CreateAccountResponse, error) {
+func (s *account_server) CreateAccount(ctx context.Context, request *proto.CreateAccountRequest) (*proto.CreateAccountResponse, error) {
 	result := internal_account.CreateAccount(request)
-	var response account.CreateAccountResponse
+	var response proto.CreateAccountResponse
 	r, _ := result.RowsAffected()
 	if r < 1 {
-		response = account.CreateAccountResponse{Response: false}
+		response = proto.CreateAccountResponse{Response: false}
 	} else {
-		response = account.CreateAccountResponse{Response: true}
+		response = proto.CreateAccountResponse{Response: true}
 	}
 
 	return &response, nil
 }
 
 func RegisterServer(s *grpc.Server) {
-	summary.RegisterGetSummaryServer(s, &summary_server{})
-	account.RegisterAccountsServer(s, &account_server{})
+	proto.RegisterGetSummaryServer(s, &summary_server{})
+	proto.RegisterAccountsServer(s, &account_server{})
 }
