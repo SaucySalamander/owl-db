@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "github.com/SaucySalamander/owl-db/pkg/proto/summary";
+
+package proto;
+
+service get_summary {
+    rpc Get_summary (summary_request) returns (summary_response) {} 
+}
+
+enum SUMMARY_REPORT {
+    All = 0;
+}
+
+message summary_request {
+    SUMMARY_REPORT summary_report = 1;
+}
+
+message summary_response {
+    string message = 1;
+}
