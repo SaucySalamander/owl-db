@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+option go_package = "github.com/SaucySalamander/owl-db/pkg/proto/account";
+
+package proto;
+
+service Accounts {
+    rpc GetAccount(GetAccountRequest) returns (GetAccountResponse) {}
+    rpc GetAccounts(GetAccountsRequest) returns (GetAccountsResponse) {}
+    rpc CreateAccount(CreateAccountRequest) returns(CreateAccountResponse) {}
+    rpc DeleteAccount(DeleteAccountRequest) returns(DeleteAccountResponse) {}
+}
+
+message Account {
+    int32 id = 1;
+    string name = 2;
+}
+
+message GetAccountRequest {
+    int32 id = 1; 
+}
+message GetAccountResponse {
+    Account account = 1;
+}
+
+message GetAccountsRequest {
+    repeated int32 ids = 1;
+}
+message GetAccountsResponse {
+    repeated Account account = 1;
+}
+
+message CreateAccountRequest {
+    string name = 1;
+}
+message CreateAccountResponse {
+    bool response = 1;
+}
+
+message DeleteAccountRequest {
+    int32 id = 1;
+}
+message DeleteAccountResponse {
+    bool response = 1;
+}

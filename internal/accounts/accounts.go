@@ -5,10 +5,11 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/SaucySalamander/owl-db/pkg/proto/account"
 	"github.com/spf13/viper"
 )
 
-func open_db() {
+func open_db() *sql.DB {
 	var conninfo = viper.GetString("db_connection")
 
 	db, err := sql.Open("postgres", conninfo)
@@ -22,4 +23,18 @@ func open_db() {
 	if err := db.PingContext(ctx); err != nil {
 		log.Fatal(err)
 	}
+
+	return db
+}
+
+func CreateAccount(request *account.CreateAccountRequest) sql.Result {
+	db := open_db()
+
+	result, err := db.ExecContext(context.TODO(), "INSERT INTO account (name) VALUES ($1)", request.Name)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return result
 }

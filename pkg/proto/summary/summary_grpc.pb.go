@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v4.24.0
-// source: pkg/proto/summary.proto
+// source: pkg/proto/summary/summary.proto
 
 package summary
 
@@ -105,5 +105,5 @@ var GetSummary_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "pkg/proto/summary.proto",
+	Metadata: "pkg/proto/summary/summary.proto",
 }
