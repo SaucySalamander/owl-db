@@ -19,10 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Accounts_GetAccount_FullMethodName    = "/proto.Accounts/GetAccount"
-	Accounts_GetAccounts_FullMethodName   = "/proto.Accounts/GetAccounts"
-	Accounts_CreateAccount_FullMethodName = "/proto.Accounts/CreateAccount"
-	Accounts_DeleteAccount_FullMethodName = "/proto.Accounts/DeleteAccount"
+	Accounts_GetAccount_FullMethodName    = "/account.Accounts/GetAccount"
+	Accounts_GetAccounts_FullMethodName   = "/account.Accounts/GetAccounts"
+	Accounts_CreateAccount_FullMethodName = "/account.Accounts/CreateAccount"
+	Accounts_DeleteAccount_FullMethodName = "/account.Accounts/DeleteAccount"
 )
 
 // AccountsClient is the client API for Accounts service.
@@ -195,7 +195,7 @@ func _Accounts_DeleteAccount_Handler(srv interface{}, ctx context.Context, dec f
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Accounts_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.Accounts",
+	ServiceName: "account.Accounts",
 	HandlerType: (*AccountsServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

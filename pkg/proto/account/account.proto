@@ -2,7 +2,7 @@ syntax = "proto3";
 
 option go_package = "github.com/SaucySalamander/owl-db/pkg/proto/account";
 
-package proto;
+package account;
 
 service Accounts {
     rpc GetAccount(GetAccountRequest) returns (GetAccountResponse) {}
