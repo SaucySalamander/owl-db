@@ -14,7 +14,7 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
-	github.com/rs/zerolog v1.30.0 // indirect
+	github.com/rs/zerolog v1.30.0
 	golang.org/x/net v0.10.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230525234030-28d5490b6b19 // indirect
 )
@@ -40,5 +40,5 @@ require (
 replace github.com/SaucySalamander/owl-db => ../
 
 replace internal/accounts => ./internal/accounts
-replace internal/categories => ./internal/categories
 
+replace internal/categories => ./internal/categories
