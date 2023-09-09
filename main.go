@@ -3,7 +3,7 @@ package main
 import (
 	"net"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 
 	internal_grpc "github.com/SaucySalamander/owl-db/pkg/gRPC"
@@ -21,14 +21,14 @@ func main() {
 
 	lis, err := net.Listen("tcp", host+":"+port)
 	if err != nil {
-		log.Errorf("Failure to create server, %v", err)
+		log.Fatal().Err(err)
 	}
 
 	server := grpc.NewServer()
 	internal_grpc.RegisterServer(server)
 
 	if err := server.Serve(lis); err != nil {
-		log.Errorf("Failed to serve the grpc server")
+		log.Fatal().Err(err)
 	}
 }
 

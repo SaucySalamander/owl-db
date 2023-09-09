@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+option go_package = "github.com/SaucySalamander/owl-db/pkg/proto";
+
+package proto;
+
+service Categories {
+    rpc GetCategory(GetCategoryRequest) returns (GetCategoryResponse) {}
+    rpc GetCategories(GetCategoriesRequest) returns (GetCategoriesResponse) {}
+    rpc CreateCategory(CreateCategoryRequest) returns(CreateCategoryResponse) {}
+    rpc DeleteCategory(DeleteCategoryRequest) returns(DeleteCategoryResponse) {}
+}
+
+message Category {
+    int64 id = 1;
+    string name = 2;
+}
+
+message GetCategoryRequest {
+    int64 id = 1; 
+}
+message GetCategoryResponse {
+    Category Category = 1;
+}
+
+message GetCategoriesRequest {
+    repeated int32 ids = 1;
+}
+message GetCategoriesResponse {
+    repeated Category Category = 1;
+}
+
+message CreateCategoryRequest {
+    string name = 1;
+}
+message CreateCategoryResponse {
+    int64 id = 1;
+}
+
+message DeleteCategoryRequest {
+    int64 id = 1;
+}
+message DeleteCategoryResponse {
+    bool response = 1;
+}
