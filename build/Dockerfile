@@ -1,0 +1,11 @@
+FROM golang:1.21.1-alpine as build
+
+RUN apk add --no-cache git
+WORKDIR /go/src/PROJECT_PATH/PROJECT_NAME
+COPY . /go/src/PROJECT_PATH/PROJECT_NAME
+RUN make PROJECT_NAME
+
+FROM scratch
+
+COPY --from=build ./PROJECT_NAME ./PROJECT_NAME
+ENTRYPOINT ["/PROJECT_NAME"]

@@ -1,0 +1,1 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/SaucySalamander/owl-db)](https://goreportcard.com/report/github.com/SaucySalamander/owl-db)
