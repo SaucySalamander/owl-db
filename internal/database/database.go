@@ -9,12 +9,13 @@ import (
 )
 
 func OpenDBConn() *sql.DB {
+	log.Info().Msg("Connecting to db")
 	var conninfo = viper.GetString("db_connection")
 
 	db, err := sql.Open("postgres", conninfo)
 
 	if err != nil {
-		panic(err)
+		log.Fatal().Msg("Failed to connect to database")
 	}
 
 	ctx := context.TODO()
@@ -22,6 +23,6 @@ func OpenDBConn() *sql.DB {
 	if err := db.PingContext(ctx); err != nil {
 		log.Fatal().Msg("Failed to ping database")
 	}
-
+	log.Info().Msg("Successfully connected to db")
 	return db
 }
