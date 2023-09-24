@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+    name: {{ include "owl-db.fullname" . }}
+    namespace: owl
+spec:
+    selector:
+        istio: ingress
+    servers:
+    - port:
+        name: grpc
+        number: {{ .Values.service.port }}
+        protocol: GRPC
+      hosts: 
+      - {{ include "owl-db.fullname" . }}.borg-cube
