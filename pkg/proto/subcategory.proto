@@ -1,8 +1,46 @@
 syntax = "proto3";
 
-syntax = "proto3";
-
-option go_package = "github.com/SaucySalamander/owl-db/pkg/proto/summary";
+option go_package = "github.com/SaucySalamander/owl-db/pkg/proto";
 
 package proto;
 
+
+service SubCategories {
+    rpc GetSubCategory(GetSubCategoryRequest) returns (GetSubCategoryResponse) {}
+    rpc GetSubCategories(GetSubCategoriesRequest) returns (GetSubCategoriesResponse) {}
+    rpc CreateSubCategory(CreateSubCategoryRequest) returns(CreateSubCategoryResponse) {}
+    rpc DeleteSubCategory(DeleteSubCategoryRequest) returns(DeleteSubCategoryResponse) {}
+}
+
+message SubCategory {
+    int64 id = 1;
+    string name = 2;
+}
+
+message GetSubCategoryRequest {
+    int64 id = 1; 
+}
+message GetSubCategoryResponse {
+    SubCategory SubCategory = 1;
+}
+
+message GetSubCategoriesRequest {
+    repeated int32 ids = 1;
+}
+message GetSubCategoriesResponse {
+    repeated SubCategory SubCategory = 1;
+}
+
+message CreateSubCategoryRequest {
+    string name = 1;
+}
+message CreateSubCategoryResponse {
+    int64 id = 1;
+}
+
+message DeleteSubCategoryRequest {
+    int64 id = 1;
+}
+message DeleteSubCategoryResponse {
+    bool response = 1;
+}

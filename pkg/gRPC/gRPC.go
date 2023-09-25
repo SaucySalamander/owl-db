@@ -33,8 +33,53 @@ type category_server struct {
 	proto.UnimplementedCategoriesServer
 }
 
+type sub_category_server struct {
+	proto.UnimplementedSubCategoriesServer
+}
+
 func (s *summary_server) GetSummary(ctx context.Context, request *proto.SummaryRequest) (*proto.SummaryResponse, error) {
 	return &proto.SummaryResponse{Message: "test"}, nil
+}
+
+func (s *sub_category_server) GetSubCategory(ctx context.Context, request *proto.GetSubCategoryRequest) (*proto.GetSubCategoryResponse, error) {
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "getSubCategory")
+	result := internal_category.GetSubCategory(ctx, request, db_pool)
+	log.Info().Int64("id", result.Id).Str("name", result.Name).Send()
+	sub_category := proto.SubCategory{
+		Id:   result.Id,
+		Name: result.Name,
+	}
+	response := proto.GetSubCategoryResponse{
+		SubCategory: &sub_category,
+	}
+	log.Info().Int64("id", response.SubCategory.Id).Str("name", response.SubCategory.Name).Send()
+	span.End()
+	return &response, nil
+}
+
+func (s *sub_category_server) CreateSubCategory(ctx context.Context, request *proto.CreateSubCategoryRequest) (*proto.CreateSubCategoryResponse, error) {
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "createSubCategory")
+	result := internal_category.CreateSubCategory(request, db_pool)
+	var response proto.CreateSubCategoryResponse
+	fmt.Printf("Created sub category: %d\n", result)
+	log.Info().Str("name", request.GetName()).Msgf("created category: %d", result)
+	response = proto.CreateSubCategoryResponse{Id: result}
+	span.End()
+	return &response, nil
+}
+
+func (s *sub_category_server) DeleteSubCategory(ctx context.Context, request *proto.DeleteSubCategoryRequest) (*proto.DeleteSubCategoryResponse, error) {
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "deleteSubCategory")
+	result := internal_category.DeleteSubCategory(request, db_pool)
+	var response proto.DeleteSubCategoryResponse
+	log.Info().Int64("id", request.GetId()).Msgf("Deleted sub category: %d", result)
+	if result == request.Id {
+		response = proto.DeleteSubCategoryResponse{Response: true}
+	} else {
+		response = proto.DeleteSubCategoryResponse{Response: false}
+	}
+	span.End()
+	return &response, nil
 }
 
 func (s *category_server) GetCategory(ctx context.Context, request *proto.GetCategoryRequest) (*proto.GetCategoryResponse, error) {
@@ -54,15 +99,18 @@ func (s *category_server) GetCategory(ctx context.Context, request *proto.GetCat
 }
 
 func (s *category_server) CreateCategory(ctx context.Context, request *proto.CreateCategoryRequest) (*proto.CreateCategoryResponse, error) {
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "createCategory")
 	result := internal_category.CreateCategory(request, db_pool)
 	var response proto.CreateCategoryResponse
 	fmt.Printf("Created account: %d\n", result)
 	log.Info().Str("name", request.GetName()).Msgf("created account: %d", result)
 	response = proto.CreateCategoryResponse{Id: result}
+	span.End()
 	return &response, nil
 }
 
 func (s *category_server) DeleteCategory(ctx context.Context, request *proto.DeleteCategoryRequest) (*proto.DeleteCategoryResponse, error) {
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "deleteCategory")
 	result := internal_category.DeleteCategory(request, db_pool)
 	var response proto.DeleteCategoryResponse
 	log.Info().Int64("id", request.GetId()).Msgf("Deleted account: %d", result)
@@ -71,6 +119,7 @@ func (s *category_server) DeleteCategory(ctx context.Context, request *proto.Del
 	} else {
 		response = proto.DeleteCategoryResponse{Response: false}
 	}
+	span.End()
 	return &response, nil
 }
 
@@ -93,14 +142,17 @@ func (s *account_server) GetAccount(ctx context.Context, request *proto.GetAccou
 }
 
 func (s *account_server) CreateAccount(ctx context.Context, request *proto.CreateAccountRequest) (*proto.CreateAccountResponse, error) {
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "createAccount")
 	result := internal_account.CreateAccount(request, db_pool)
 	var response proto.CreateAccountResponse
 	fmt.Printf("Created account: %d\n", result)
 	response = proto.CreateAccountResponse{Id: result}
+	span.End()
 	return &response, nil
 }
 
 func (s *account_server) DeleteAccount(ctx context.Context, request *proto.DeleteAccountRequest) (*proto.DeleteAccountResponse, error) {
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "deleteAccount")
 	result := internal_account.DeleteAccount(request, db_pool)
 	var response proto.DeleteAccountResponse
 	fmt.Printf("Deleted account: %d\n", result)
@@ -109,6 +161,7 @@ func (s *account_server) DeleteAccount(ctx context.Context, request *proto.Delet
 	} else {
 		response = proto.DeleteAccountResponse{Response: false}
 	}
+	span.End()
 	return &response, nil
 }
 
@@ -117,5 +170,6 @@ func RegisterServer(s *grpc.Server) {
 	proto.RegisterGetSummaryServer(s, &summary_server{})
 	proto.RegisterAccountsServer(s, &account_server{})
 	proto.RegisterCategoriesServer(s, &category_server{})
+	proto.RegisterSubCategoriesServer(s, &sub_category_server{})
 	db_pool = database.OpenDBConn()
 }

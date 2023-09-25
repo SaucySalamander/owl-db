@@ -11,7 +11,7 @@ import (
 func OpenDBConn() *sql.DB {
 	log.Info().Msg("Connecting to db")
 	var url = viper.GetString("db.url")
-	var username = viper.GetString("db.username")
+	var username = viper.GetString("db.user")
 	var password = viper.GetString("db.password")
 
 	conninfo := "postgres://" + username + ":" + password + "@" + url
