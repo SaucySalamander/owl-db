@@ -1,11 +1,14 @@
 package accounts
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
 
 	"github.com/SaucySalamander/owl-db/pkg/proto"
+	"github.com/spf13/viper"
+	"go.opentelemetry.io/otel"
 )
 
 type Account struct {
@@ -13,7 +16,11 @@ type Account struct {
 	Name string
 }
 
-func GetAccount(request *proto.GetAccountRequest, db_pool *sql.DB) Account {
+var serviceName string = viper.GetString("otel.service-name")
+
+func GetAccount(ctx context.Context, request *proto.GetAccountRequest, db_pool *sql.DB) Account {
+	_, span := otel.Tracer(serviceName).Start(ctx, "DbQuery")
+	defer span.End()
 	fmt.Println("requested id:", request.Id)
 	result, err := db_pool.Query("SELECT account_id, account_name FROM account WHERE account_id=$1", request.Id)
 	fmt.Println(result.Columns())

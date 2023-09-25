@@ -11,10 +11,15 @@ import (
 	"github.com/SaucySalamander/owl-db/internal/database"
 	"github.com/SaucySalamander/owl-db/pkg/proto"
 	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
+	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
 var db_pool *sql.DB
+var serviceName string = viper.GetString("otel.service-name")
 
 type account_server struct {
 	proto.UnimplementedAccountsServer
@@ -33,7 +38,8 @@ func (s *summary_server) GetSummary(ctx context.Context, request *proto.SummaryR
 }
 
 func (s *category_server) GetCategory(ctx context.Context, request *proto.GetCategoryRequest) (*proto.GetCategoryResponse, error) {
-	result := internal_category.GetCategory(request, db_pool)
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "getCategory")
+	result := internal_category.GetCategory(ctx, request, db_pool)
 	log.Info().Int64("id", result.Id).Str("name", result.Name).Send()
 	category := proto.Category{
 		Id:   result.Id,
@@ -43,6 +49,7 @@ func (s *category_server) GetCategory(ctx context.Context, request *proto.GetCat
 		Category: &category,
 	}
 	log.Info().Int64("id", response.Category.Id).Str("name", response.Category.Name).Send()
+	span.End()
 	return &response, nil
 }
 
@@ -68,7 +75,8 @@ func (s *category_server) DeleteCategory(ctx context.Context, request *proto.Del
 }
 
 func (s *account_server) GetAccount(ctx context.Context, request *proto.GetAccountRequest) (*proto.GetAccountResponse, error) {
-	result := internal_account.GetAccount(request, db_pool)
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "getAccount")
+	result := internal_account.GetAccount(ctx, request, db_pool)
 	fmt.Println("r id: ", result.Id)
 	fmt.Println("r name: ", result.Name)
 	account := proto.Account{
@@ -80,6 +88,7 @@ func (s *account_server) GetAccount(ctx context.Context, request *proto.GetAccou
 	}
 	fmt.Println("resp id: ", response.Account.Id)
 	fmt.Println("resp name: ", response.Account.Name)
+	span.End()
 	return &response, nil
 }
 
@@ -104,6 +113,7 @@ func (s *account_server) DeleteAccount(ctx context.Context, request *proto.Delet
 }
 
 func RegisterServer(s *grpc.Server) {
+	grpc_health_v1.RegisterHealthServer(s, health.NewServer())
 	proto.RegisterGetSummaryServer(s, &summary_server{})
 	proto.RegisterAccountsServer(s, &account_server{})
 	proto.RegisterCategoriesServer(s, &category_server{})

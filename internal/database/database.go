@@ -10,8 +10,11 @@ import (
 
 func OpenDBConn() *sql.DB {
 	log.Info().Msg("Connecting to db")
-	var conninfo = viper.GetString("db_connection")
+	var url = viper.GetString("db.url")
+	var username = viper.GetString("db.username")
+	var password = viper.GetString("db.password")
 
+	conninfo := "postgres://" + username + ":" + password + "@" + url
 	db, err := sql.Open("postgres", conninfo)
 
 	if err != nil {
