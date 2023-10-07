@@ -24,7 +24,6 @@ message GetAccountResponse {
 }
 
 message GetAccountsRequest {
-    repeated int32 ids = 1;
 }
 message GetAccountsResponse {
     repeated Account account = 1;

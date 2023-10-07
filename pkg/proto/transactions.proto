@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option go_package = "github.com/SaucySalamander/owl-db/pkg/proto";
+
+package proto;
+
+service Transactions {
+    rpc GetTransaction(GetTransactionRequest) returns (GetTransactionResponse) {}
+    rpc GetTransactions(GetTransactionsRequest) returns (GetTransactionsResponse) {}
+    rpc CreateTransaction(CreateTransactionRequest) returns(CreateTransactionResponse) {}
+    rpc DeleteTransaction(DeleteTransactionRequest) returns(DeleteTransactionResponse) {}
+}
+
+message Transaction {
+    int64 id = 1;
+    google.protobuf.Date date = 2;
+    int64 account_id = 3;
+    int64 category_id = 4;
+    int64 sub_category_id = 5;
+    string name = 6;
+    debit = 7;
+    credit = 8;
+}

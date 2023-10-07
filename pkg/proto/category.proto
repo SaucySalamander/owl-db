@@ -24,7 +24,6 @@ message GetCategoryResponse {
 }
 
 message GetCategoriesRequest {
-    repeated int32 ids = 1;
 }
 message GetCategoriesResponse {
     repeated Category Category = 1;
