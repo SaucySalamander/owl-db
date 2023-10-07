@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	internal_account "internal/accounts"
-	internal_category "internal/categories"
+	internal_account "github.com/SaucySalamander/owl-db/internal/accounts"
+	internal_category "github.com/SaucySalamander/owl-db/internal/categories"
 
 	"github.com/SaucySalamander/owl-db/internal/database"
 	"github.com/SaucySalamander/owl-db/pkg/proto"

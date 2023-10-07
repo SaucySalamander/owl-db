@@ -5,9 +5,10 @@ go 1.21.0
 require (
 	github.com/lib/pq v1.10.9
 	github.com/spf13/viper v1.16.0
+	go.opentelemetry.io/otel v1.18.0
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.18.0
+	go.opentelemetry.io/otel/sdk v1.18.0
 	google.golang.org/protobuf v1.31.0
-	internal/accounts v0.0.0-00010101000000-000000000000
-	internal/categories v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -16,11 +17,8 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	go.opentelemetry.io/otel v1.18.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.18.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.18.0 // indirect
 	go.opentelemetry.io/otel/metric v1.18.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.18.0 // indirect
 	go.opentelemetry.io/otel/trace v1.18.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20230711160842-782d3b101e98 // indirect
@@ -53,9 +51,3 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace github.com/SaucySalamander/owl-db => ../
-
-replace internal/accounts => ./internal/accounts
-
-replace internal/categories => ./internal/categories
