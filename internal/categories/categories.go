@@ -42,6 +42,23 @@ func GetCategory(ctx context.Context, request *proto.GetCategoryRequest, db_pool
 	}
 }
 
+func GetAllCategories(ctx context.Context, db_pool *sql.DB) []*proto.Category {
+	_, span := otel.Tracer(serviceName).Start(ctx, "DbQuery")
+	defer span.End()
+	result, err := db_pool.Query("SELECT category_id, category_name FROM category")
+	if err != nil {
+		log.Fatal().Err(err).Send()
+	}
+	var categories []*proto.Category
+	for result.Next() {
+		var category_id int64
+		var category_name string
+		result.Scan(&category_id, &category_name)
+		categories = append(categories, &proto.Category{Id: category_id, Name: category_name})
+	}
+	return categories
+}
+
 func CreateCategory(request *proto.CreateCategoryRequest, db_pool *sql.DB) int64 {
 	var id int64
 	result := db_pool.QueryRow("INSERT INTO category (category_name) VALUES ($1) RETURNING category_id", request.Name)

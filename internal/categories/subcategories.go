@@ -10,12 +10,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 )
 
-type SubCategory struct {
-	Id   int64
-	Name string
-}
-
-func GetSubCategory(ctx context.Context, request *proto.GetSubCategoryRequest, db_pool *sql.DB) SubCategory {
+func GetSubCategory(ctx context.Context, request *proto.GetSubCategoryRequest, db_pool *sql.DB) proto.SubCategory {
 	_, span := otel.Tracer(serviceName).Start(ctx, "DbQuery")
 	defer span.End()
 	log.Info().Int("id", int(request.GetId())).Send()
@@ -25,20 +20,34 @@ func GetSubCategory(ctx context.Context, request *proto.GetSubCategoryRequest, d
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
+	result.Next()
 	var sub_category_id int64
 	var sub_category_name string
-	for result.Next() {
-		result.Scan(&sub_category_id, &sub_category_name)
-	}
-
+	result.Scan(&sub_category_id, &sub_category_name)
 	log.Debug().Int64("id", sub_category_id).Str("name", sub_category_name).Send()
 	span.SetAttributes(attribute.Int64("sub_category_id", sub_category_id), attribute.String("sub_category_name", sub_category_name))
-	return SubCategory{
-		Id:   sub_category_id,
-		Name: sub_category_name,
-	}
+	return proto.SubCategory{Id: sub_category_id, Name: sub_category_name}
 }
 
+func GetAllSubCategories(ctx context.Context, db_pool *sql.DB) []*proto.SubCategory {
+	_, span := otel.Tracer(serviceName).Start(ctx, "DbQuery")
+	defer span.End()
+	log.Info().Msg("Requesting all subcategories")
+	result, err := db_pool.Query("SELECT sub_category_id, sub_category_name FROM sub_category")
+	if err != nil {
+		log.Fatal().Err(err).Send()
+	}
+	var subcategories []*proto.SubCategory
+	for result.Next() {
+		var sub_category_id int64
+		var sub_category_name string
+		result.Scan(&sub_category_id, &sub_category_name)
+		subcategories = append(subcategories, &proto.SubCategory{Id: sub_category_id, Name: sub_category_name})
+		log.Debug().Int64("id", sub_category_id).Str("name", sub_category_name).Send()
+	}
+	span.SetAttributes(attribute.Int("total accounts retrieved", len(subcategories)))
+	return subcategories
+}
 func CreateSubCategory(request *proto.CreateSubCategoryRequest, db_pool *sql.DB) int64 {
 	var id int64
 	result := db_pool.QueryRow("INSERT INTO sub_category (sub_category_name) VALUES ($1) RETURNING sub_category_id", request.Name)

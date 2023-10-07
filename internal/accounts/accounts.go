@@ -4,9 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 
 	"github.com/SaucySalamander/owl-db/pkg/proto"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 	"go.opentelemetry.io/otel"
 )
@@ -25,7 +25,7 @@ func GetAccount(ctx context.Context, request *proto.GetAccountRequest, db_pool *
 	result, err := db_pool.Query("SELECT account_id, account_name FROM account WHERE account_id=$1", request.Id)
 	fmt.Println(result.Columns())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Send()
 	}
 	var account_id int64
 	var account_name string
@@ -39,6 +39,23 @@ func GetAccount(ctx context.Context, request *proto.GetAccountRequest, db_pool *
 		Id:   account_id,
 		Name: account_name,
 	}
+}
+
+func GetAccounts(ctx context.Context, db_pool *sql.DB) []*proto.Account {
+	_, span := otel.Tracer(serviceName).Start(ctx, "DbQuery")
+	defer span.End()
+	result, err := db_pool.Query("SELECT account_id, account_name FROM account")
+	if err != nil {
+		log.Fatal().Err(err).Send()
+	}
+	var accounts []*proto.Account
+	for result.Next() {
+		var account_id int64
+		var account_name string
+		result.Scan(&account_id, &account_name)
+		accounts = append(accounts, &proto.Account{Id: account_id, Name: account_name})
+	}
+	return accounts
 }
 
 func CreateAccount(request *proto.CreateAccountRequest, db_pool *sql.DB) int64 {

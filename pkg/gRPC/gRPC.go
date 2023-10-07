@@ -57,6 +57,16 @@ func (s *sub_category_server) GetSubCategory(ctx context.Context, request *proto
 	return &response, nil
 }
 
+func (s *sub_category_server) GetSubCategories(ctx context.Context, request *proto.GetSubCategoriesRequest) (*proto.GetSubCategoriesResponse, error) {
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "getAllSubCategories")
+	result := internal_category.GetAllSubCategories(ctx, db_pool)
+	response := proto.GetSubCategoriesResponse{
+		SubCategory: result,
+	}
+	span.End()
+	return &response, nil
+}
+
 func (s *sub_category_server) CreateSubCategory(ctx context.Context, request *proto.CreateSubCategoryRequest) (*proto.CreateSubCategoryResponse, error) {
 	ctx, span := otel.Tracer(serviceName).Start(ctx, "createSubCategory")
 	result := internal_category.CreateSubCategory(request, db_pool)
@@ -94,6 +104,16 @@ func (s *category_server) GetCategory(ctx context.Context, request *proto.GetCat
 		Category: &category,
 	}
 	log.Info().Int64("id", response.Category.Id).Str("name", response.Category.Name).Send()
+	span.End()
+	return &response, nil
+}
+
+func (s *category_server) GetCategories(ctx context.Context, request *proto.GetCategoriesRequest) (*proto.GetCategoriesResponse, error) {
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "getCategories")
+	result := internal_category.GetAllCategories(ctx, db_pool)
+	response := proto.GetCategoriesResponse{
+		Category: result,
+	}
 	span.End()
 	return &response, nil
 }
@@ -137,6 +157,16 @@ func (s *account_server) GetAccount(ctx context.Context, request *proto.GetAccou
 	}
 	fmt.Println("resp id: ", response.Account.Id)
 	fmt.Println("resp name: ", response.Account.Name)
+	span.End()
+	return &response, nil
+}
+
+func (s *account_server) GetAccounts(ctx context.Context, request *proto.GetAccountsRequest) (*proto.GetAccountsResponse, error) {
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "getAccounts")
+	result := internal_account.GetAccounts(ctx, db_pool)
+	response := proto.GetAccountsResponse{
+		Account: result,
+	}
 	span.End()
 	return &response, nil
 }
