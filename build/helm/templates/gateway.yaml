@@ -5,7 +5,7 @@ metadata:
     namespace: owl
 spec:
     selector:
-        istio: ingress
+        istio: ingressgateway
     servers:
     - port:
         name: grpc

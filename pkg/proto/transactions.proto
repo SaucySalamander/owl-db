@@ -4,6 +4,8 @@ option go_package = "github.com/SaucySalamander/owl-db/pkg/proto";
 
 package proto;
 
+import "google/protobuf/timestamp.proto";
+
 service Transactions {
     rpc GetTransaction(GetTransactionRequest) returns (GetTransactionResponse) {}
     rpc GetTransactions(GetTransactionsRequest) returns (GetTransactionsResponse) {}
@@ -13,11 +15,42 @@ service Transactions {
 
 message Transaction {
     int64 id = 1;
-    google.protobuf.Date date = 2;
+    google.protobuf.Timestamp timestamp = 2;
     int64 account_id = 3;
     int64 category_id = 4;
     int64 sub_category_id = 5;
     string name = 6;
-    debit = 7;
-    credit = 8;
+    double debit = 7;
+    double credit = 8;
+}
+
+message GetTransactionRequest {
+    int64 id = 1;
+}
+
+message GetTransactionResponse {
+    Transaction transaction = 1;
+}
+
+message GetTransactionsRequest {
+}
+
+message GetTransactionsResponse {
+    repeated Transaction transaction = 1;
+}
+
+message CreateTransactionRequest {
+    Transaction transaction = 1;
+}
+
+message CreateTransactionResponse {
+    int64 id = 1;
+}
+
+message DeleteTransactionRequest {
+    int64 id = 1;
+}
+
+message DeleteTransactionResponse {
+    int64 id = 1;
 }

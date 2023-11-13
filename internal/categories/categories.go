@@ -22,7 +22,7 @@ func GetCategory(ctx context.Context, request *proto.GetCategoryRequest, db_pool
 	_, span := otel.Tracer(serviceName).Start(ctx, "DbQuery")
 	defer span.End()
 	log.Info().Int("id", int(request.GetId())).Send()
-	result, err := db_pool.Query("SELECT category_id, category_name FROM category WHERE category_id=$1", request.Id)
+	result, err := db_pool.Query("SELECT category_id, category_name FROM categories WHERE category_id=$1", request.Id)
 	test, _ := result.Columns()
 	log.Info().Strs("columns", test).Send()
 	if err != nil {
@@ -45,7 +45,7 @@ func GetCategory(ctx context.Context, request *proto.GetCategoryRequest, db_pool
 func GetAllCategories(ctx context.Context, db_pool *sql.DB) []*proto.Category {
 	_, span := otel.Tracer(serviceName).Start(ctx, "DbQuery")
 	defer span.End()
-	result, err := db_pool.Query("SELECT category_id, category_name FROM category")
+	result, err := db_pool.Query("SELECT category_id, category_name FROM categories")
 	if err != nil {
 		log.Fatal().Err(err).Send()
 	}
@@ -61,14 +61,14 @@ func GetAllCategories(ctx context.Context, db_pool *sql.DB) []*proto.Category {
 
 func CreateCategory(request *proto.CreateCategoryRequest, db_pool *sql.DB) int64 {
 	var id int64
-	result := db_pool.QueryRow("INSERT INTO category (category_name) VALUES ($1) RETURNING category_id", request.Name)
+	result := db_pool.QueryRow("INSERT INTO categories (category_name) VALUES ($1) RETURNING category_id", request.Name)
 	result.Scan(&id)
 	return id
 }
 
 func DeleteCategory(request *proto.DeleteCategoryRequest, db_pool *sql.DB) int64 {
 	var id int64
-	result := db_pool.QueryRow("DELETE FROM category where category_id=$1 RETURNING category_id", request.Id)
+	result := db_pool.QueryRow("DELETE FROM categories where category_id=$1 RETURNING category_id", request.Id)
 	result.Scan(&id)
 	return id
 }
