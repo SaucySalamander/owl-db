@@ -33,6 +33,13 @@ message GetTransactionResponse {
 }
 
 message GetTransactionsRequest {
+    repeated int64 ids = 1;
+    optional google.protobuf.Timestamp start_time = 2;
+    optional google.protobuf.Timestamp end_time = 3;
+    repeated int64 account_ids = 4;
+    repeated int64 category_ids = 5;
+    repeated int64 sub_category_ids = 6;
+    repeated string names = 7;
 }
 
 message GetTransactionsResponse {

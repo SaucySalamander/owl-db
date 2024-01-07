@@ -7,6 +7,7 @@ import (
 
 	internal_account "github.com/SaucySalamander/owl-db/internal/accounts"
 	internal_category "github.com/SaucySalamander/owl-db/internal/categories"
+	internal_transactions "github.com/SaucySalamander/owl-db/internal/transactions"
 
 	"github.com/SaucySalamander/owl-db/internal/database"
 	"github.com/SaucySalamander/owl-db/pkg/proto"
@@ -35,6 +36,10 @@ type category_server struct {
 
 type sub_category_server struct {
 	proto.UnimplementedSubCategoriesServer
+}
+
+type transaction_server struct {
+	proto.UnimplementedTransactionsServer
 }
 
 func (s *summary_server) GetSummary(ctx context.Context, request *proto.SummaryRequest) (*proto.SummaryResponse, error) {
@@ -195,11 +200,52 @@ func (s *account_server) DeleteAccount(ctx context.Context, request *proto.Delet
 	return &response, nil
 }
 
+func (s *transaction_server) GetTransaction(ctx context.Context, request *proto.GetTransactionRequest) (*proto.GetTransactionResponse, error) {
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "getTransaction")
+	result := internal_transactions.GetTransaction(request, db_pool)
+	var response proto.GetTransactionResponse
+	if result.Id != 0 {
+		response = proto.GetTransactionResponse{Transaction: result}
+		log.Info().Int64("transaction_id", result.Id).Msg("Found transaction")
+	}
+	span.End()
+	return &response, nil
+}
+
+// func (s *transaction_server) GetTransactions(ctx context.Context, request *proto.GetTransactionsRequest) (*proto.GetTransactionsResponse, error) {
+
+// }
+
+func (s *transaction_server) DeteleTransaction(ctx context.Context, request *proto.DeleteTransactionRequest) (*proto.DeleteTransactionResponse, error) {
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "deleteTransaction")
+	result := internal_transactions.DeleteTransaction(request, db_pool)
+	var response proto.DeleteTransactionResponse
+	fmt.Printf("Deleted account: %d\n", result)
+	if result == request.Id {
+		response = proto.DeleteTransactionResponse{Id: response.Id}
+	} else {
+		response = proto.DeleteTransactionResponse{Id: 0}
+	}
+	span.End()
+	return &response, nil
+}
+
+func (s *transaction_server) CreateTransaction(ctx context.Context, request *proto.CreateTransactionRequest) (*proto.CreateTransactionResponse, error) {
+	ctx, span := otel.Tracer(serviceName).Start(ctx, "createTransaction")
+	result := internal_transactions.CreateTransaction(request, db_pool)
+	var response proto.CreateTransactionResponse
+	fmt.Printf("Created transaction: %d\n", result)
+	response = proto.CreateTransactionResponse{Id: result}
+	span.End()
+	return &response, nil
+}
+
 func RegisterServer(s *grpc.Server) {
 	grpc_health_v1.RegisterHealthServer(s, health.NewServer())
 	proto.RegisterGetSummaryServer(s, &summary_server{})
 	proto.RegisterAccountsServer(s, &account_server{})
 	proto.RegisterCategoriesServer(s, &category_server{})
 	proto.RegisterSubCategoriesServer(s, &sub_category_server{})
+	proto.RegisterTransactionsServer(s, &transaction_server{})
 	db_pool = database.OpenDBConn()
 }
