@@ -2,6 +2,8 @@ PACKAGE_PATH = github.com\/SaucySalamander
 PROJECT_NAME = owl-db
 VERSION = 0.0.1-alpha
 
+export PATH := $(PATH):$(HOME)/go/bin
+
 owl-db:
 	go build -o ./$(PROJECT_NAME)-$(VERSION)
 
@@ -17,6 +19,9 @@ image-clean:
 chart:
 
 publish:
+
+proto:
+	protoc -I. -I/usr/local/include/ --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative pkg/proto/*.proto
 
 clean:
 	go clean
